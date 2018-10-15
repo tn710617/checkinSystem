@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CheckIn extends Migration
+class CreateCheckInsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,12 @@ class CheckIn extends Migration
      */
     public function up()
     {
-        //
+        Schema::create('check_ins', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('user_id');
+            $table->string('check')->default('no');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -23,6 +28,6 @@ class CheckIn extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('check_ins');
     }
 }
