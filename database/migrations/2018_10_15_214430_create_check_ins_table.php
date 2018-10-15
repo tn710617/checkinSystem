@@ -16,7 +16,7 @@ class CreateCheckInsTable extends Migration
         Schema::create('check_ins', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id');
-            $table->string('check')->default('no');
+            $table->string('check_or_not');
             $table->timestamps();
         });
     }

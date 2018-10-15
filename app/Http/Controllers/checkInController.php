@@ -7,6 +7,7 @@ use App\Token;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class checkInController extends Controller
 {
@@ -33,10 +34,51 @@ class checkInController extends Controller
 
         checkIn::forceCreate([
             'user_id' => $userInfo->id,
-            'check' => 'yes',
+            'check_or_not' => 'checked',
         ]);
 
         return ['result' => 'true', 'response' => 'You\'ve successfully checked in'];
     }
 
+    public function showCheckIn(Request $request)
+    {
+        $this->validate(request(),[
+            'token' => 'required'
+        ]);
+
+        $time = Carbon::now();
+        $currentYear = $time->year;
+        $currentMonth = $time->month;
+        $currentDate = $time->day;
+        $user_id = token::where('api_token', $request->token)->first()->user_id;
+
+        $checkInInDetail = DB::table('check_ins')
+            ->select(DB::raw('day(created_at)date, check_or_not'))
+            ->whereMonth('created_at', $currentMonth)
+            ->where('user_id', $user_id)
+            ->get()->toArray();
+
+//
+        $finalOutput = array();
+
+        $howManyDaysInAMonth = cal_days_in_month(CAL_GREGORIAN, $currentMonth, $currentYear);
+
+        for ($daysInAMonth = 1; $daysInAMonth <= $howManyDaysInAMonth; $daysInAMonth++)
+        {
+            foreach($checkInInDetail as $data)
+            {
+                if($daysInAMonth == $data->date)
+                {
+                    $finalOutput[$data->date] = $data->check_or_not;
+                }
+            }
+            if(!isset($finalOutput[$data->date]))
+            {
+                $finalOutput[$daysInAMonth] = 'no';
+            }
+        }
+
+        return ['result' => 'true', 'response' => $finalOutput];
+
+    }
 }
