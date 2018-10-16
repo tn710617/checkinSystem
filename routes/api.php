@@ -13,12 +13,12 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+Route::middleware('auth:api.Ray')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::post('/register', 'registrationController@register');
 Route::post('/login', 'loginController@login');
 Route::post('/checkIn', 'checkInController@checkIn');
 Route::post('/showCheckIn', 'checkInController@showCheckIn');
-Route::post('/adminShowTodayCheckIn', 'adminController@showCheckInToday');
-Route::post('/adminShowSingleUserCheckIn', 'adminController@showSingleUserCheckIn');
+Route::post('/adminShowTodayCheckIn', 'adminController@showCheckInToday')->middleware('admin');
+Route::post('/adminShowSingleUserCheckIn', 'adminController@showSingleUserCheckIn')->middleware('admin');

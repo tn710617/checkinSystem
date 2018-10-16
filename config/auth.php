@@ -45,6 +45,10 @@ return [
             'driver' => 'token',
             'provider' => 'users',
         ],
+//        'api.Ray' => [
+//            'driver' => 'ray',
+//            'provider' => 'users',
+//        ],
     ],
 
     /*

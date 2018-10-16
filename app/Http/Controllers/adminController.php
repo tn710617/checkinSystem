@@ -33,7 +33,7 @@ class adminController extends Controller {
 
         $notYetCheckedInUsers = User::whereNotIn('id', $checkedInUsersIdArray)->get();
 
-        return ['result' => 'true', 'response' => ['checkedInUser' => $checkedInUsers, 'notYetCheckedInUserrrs' => $notYetCheckedInUsers]];
+        return ['result' => 'true', 'response' => ['checkedInUser' => $checkedInUsers, 'notYetCheckedInUsers' => $notYetCheckedInUsers]];
 
     }
 
@@ -78,7 +78,7 @@ class adminController extends Controller {
                 $finalOutput[$daysInAMonth] = 'no';
             }
         }
-        return $finalOutput;
+        return ['result' => 'true', 'response' => $finalOutput];
 
     }
 
