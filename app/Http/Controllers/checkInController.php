@@ -70,6 +70,7 @@ class checkInController extends Controller
                 if($daysInAMonth == $data->date)
                 {
                     $finalOutput[$data->date] = $data->check_or_not;
+                    break;
                 }
             }
             if(!isset($finalOutput[$data->date]))

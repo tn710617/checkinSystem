@@ -25,7 +25,8 @@ class loginController extends Controller
         $token_count = DB::table('tokens')->where('api_token', $token)->count();
         while ($token_count == 1)
         {
-            $token = str_random();
+            $token = str_random(60);
+            $token_count = DB::table('tokens')->where('api_token', $token)->count();
         }
 
         $user = Auth::user();

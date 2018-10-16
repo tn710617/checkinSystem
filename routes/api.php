@@ -20,3 +20,5 @@ Route::post('/register', 'registrationController@register');
 Route::post('/login', 'loginController@login');
 Route::post('/checkIn', 'checkInController@checkIn');
 Route::post('/showCheckIn', 'checkInController@showCheckIn');
+Route::post('/adminShowTodayCheckIn', 'adminController@showCheckInToday');
+Route::post('/adminShowSingleUserCheckIn', 'adminController@showSingleUserCheckIn');
