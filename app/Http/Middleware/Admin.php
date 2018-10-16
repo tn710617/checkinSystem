@@ -22,13 +22,17 @@ class Admin
            ->where('api_token', $request->token)
            ->join('users', 'users.id', '=', 'tokens.user_id')
            ->select('admin')
-           ->get();
+           ->first()->admin;
 //        $user_id = Token::where('api_token', $request->token)->first()->user_id;
 //        $checkAdmin = User::where('id', $user_id)->first()->admin;
 //        if($checkAdmin != 'yes')
 //        {
 //            return response(['result'=>'false', 'response' => 'You are not qualified to access it']);
 //        }
+        if($checkAdmin != 'yes')
+        {
+            return response(['result'=>'false', 'response' => 'You are not qualified to access it']);
+        }
         return $next($request);
     }
 }
