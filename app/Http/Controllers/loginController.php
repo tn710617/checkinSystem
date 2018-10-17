@@ -34,7 +34,7 @@ class loginController extends Controller
             'user_id' => $user->id,
             'api_token' => $token,
             'expiry_time' => time() + 7200,
-            'refresh_time' => time() + 86400
+            'refresh_time' => time() + 84600
         ]);
 
         return ['result' => 'true', 'response' => 'You\'ve successfully logged in', 'token' => $token];

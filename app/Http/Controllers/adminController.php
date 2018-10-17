@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\checkIn;
+use App\Http\Middleware\Admin;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -77,6 +78,10 @@ class adminController extends Controller {
             {
                 $finalOutput[$daysInAMonth] = 'no';
             }
+        }
+        if ($request->get('updatedToken'))
+        {
+            return ['result' => 'true', 'response' => $finalOutput, 'updatedToken' => $request->get('updatedToken')];
         }
         return ['result' => 'true', 'response' => $finalOutput];
 
