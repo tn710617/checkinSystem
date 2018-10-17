@@ -41,7 +41,7 @@ class adminController extends Controller {
     public function showSingleUserCheckIn(Request $request)
     {
         $this->validate(request(), [
-            'token' => 'required',
+            'token'   => 'required',
             'user_id' => 'required'
         ]);
 
@@ -69,20 +69,21 @@ class adminController extends Controller {
             {
                 if ($daysInAMonth == $data->date)
                 {
-                    $finalOutput[$data->date] = $data->check_or_not;
+                    $finalOutput[$daysInAMonth] = $data->check_or_not;
                     break;
                 }
             }
 
-            if (!isset($finalOutput[$data->date]))
+            if (!isset($finalOutput[$daysInAMonth]))
             {
-                $finalOutput[$daysInAMonth] = 'no';
+                $finalOutput[$daysInAMonth] = $daysInAMonth > $currentDate ? 'To be seen' : 'no';
             }
         }
         if ($request->get('updatedToken'))
         {
             return ['result' => 'true', 'response' => $finalOutput, 'updatedToken' => $request->get('updatedToken')];
         }
+
         return ['result' => 'true', 'response' => $finalOutput];
 
     }

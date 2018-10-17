@@ -9,15 +9,15 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class checkInController extends Controller
-{
+class checkInController extends Controller {
+
     public function checkIn(Request $request)
     {
-        $this->validate(request(),[
+        $this->validate(request(), [
             'token' => 'required',
         ]);
         $token_count = token::where('api_token', $request->token)->count();
-        if(!$token_count)
+        if (!$token_count)
         {
             return ['result' => 'false', 'response' => 'Please login before checking in'];
         }
@@ -27,13 +27,13 @@ class checkInController extends Controller
         $currentDate = Carbon::now()->day;
         $checkInCount = checkIn::whereday('created_at', $currentDate)->where('user_id', $user_id)->count();
 
-        if($checkInCount)
+        if ($checkInCount)
         {
             return ['result' => 'false', 'response' => 'You already checked in today'];
         }
 
         checkIn::forceCreate([
-            'user_id' => $userInfo->id,
+            'user_id'      => $userInfo->id,
             'check_or_not' => 'checked',
         ]);
 
@@ -42,7 +42,7 @@ class checkInController extends Controller
 
     public function showCheckIn(Request $request)
     {
-        $this->validate(request(),[
+        $this->validate(request(), [
             'token' => 'required'
         ]);
 
@@ -58,28 +58,26 @@ class checkInController extends Controller
             ->where('user_id', $user_id)
             ->get()->toArray();
 
-//
         $finalOutput = array();
 
         $howManyDaysInAMonth = cal_days_in_month(CAL_GREGORIAN, $currentMonth, $currentYear);
 
-        for ($daysInAMonth = 1; $daysInAMonth <= $howManyDaysInAMonth; $daysInAMonth++)
+        for ($daysInAMonth = 1; $daysInAMonth <= $howManyDaysInAMonth; $daysInAMonth ++)
         {
-            foreach($checkInInDetail as $data)
+            foreach ($checkInInDetail as $data)
             {
-                if($daysInAMonth == $data->date)
+                if ($daysInAMonth == $data->date)
                 {
-                    $finalOutput[$data->date] = $data->check_or_not;
+                    $finalOutput[$daysInAMonth] = $data->check_or_not;
                     break;
                 }
             }
-            if(!isset($finalOutput[$data->date]))
+            if (!isset($finalOutput[$daysInAMonth]))
             {
-                $finalOutput[$daysInAMonth] = 'no';
+                $finalOutput[$daysInAMonth] = $daysInAMonth > $currentDate ? 'To be seen' : 'no';
             }
         }
 
         return ['result' => 'true', 'response' => $finalOutput];
-
     }
 }
