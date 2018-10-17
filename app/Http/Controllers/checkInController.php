@@ -33,6 +33,10 @@ class checkInController extends Controller {
             'user_id'      => $userInfo->id,
             'check_or_not' => 'checked',
         ]);
+        if ($request->get('updatedToken'))
+        {
+            return ['result' => 'true', 'response' => 'You\'ve successfully checked in', 'updatedToken' => $request->get('updatedToken')];
+        }
 
         return ['result' => 'true', 'response' => 'You\'ve successfully checked in'];
     }
@@ -69,6 +73,11 @@ class checkInController extends Controller {
             {
                 $finalOutput[$daysInAMonth] = $daysInAMonth > $currentDate ? 'To be seen' : 'no';
             }
+        }
+
+        if ($request->get('updatedToken'))
+        {
+            return ['result' => 'true', 'response' => $finalOutput, 'updatedToken' => $request->get('updatedToken')];
         }
 
         return ['result' => 'true', 'response' => $finalOutput];

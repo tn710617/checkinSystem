@@ -32,8 +32,11 @@ class adminController extends Controller {
 
         $notYetCheckedInUsers = User::whereNotIn('id', $checkedInUsersIdArray)->get();
 
+        if ($request->get('updatedToken'))
+        {
+            return ['result' => 'true', 'response' => ['checkedInUser' => $checkedInUsers, 'notYetCheckedInUsers' => $notYetCheckedInUsers, 'updatedToken' => $request->get('updatedToken')]];
+        }
         return ['result' => 'true', 'response' => ['checkedInUser' => $checkedInUsers, 'notYetCheckedInUsers' => $notYetCheckedInUsers]];
-
     }
 
     public function showSingleUserCheckIn(Request $request)
