@@ -8,14 +8,12 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class adminController extends Controller {
 
     public function showCheckInToday(Request $request)
     {
-        $this->validate(request(), [
-            'token' => 'required'
-        ]);
         $time = Carbon::now();
         $currentYear = $time->year;
         $currentMonth = $time->month;
@@ -40,10 +38,14 @@ class adminController extends Controller {
 
     public function showSingleUserCheckIn(Request $request)
     {
-        $this->validate(request(), [
-            'token'   => 'required',
+        $validator = validator::make($request->all(), [
             'user_id' => 'required'
         ]);
+        if ($validator->fails())
+        {
+            return ['result' => 'false', 'response' => $validator->errors()->first()];
+        }
+
 
         $time = Carbon::now();
         $currentYear = $time->year;
@@ -85,7 +87,6 @@ class adminController extends Controller {
         }
 
         return ['result' => 'true', 'response' => $finalOutput];
-
     }
 
 }

@@ -6,15 +6,20 @@ use App\Token;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
-class loginController extends Controller
-{
+class loginController extends Controller {
+
     public function login(Request $request)
     {
-        $this->validate(request(), [
+        $validator = validator::make($request->all(), [
             'email'    => 'required|string|max:255',
             'password' => 'required|string|max:255'
         ]);
+        if ($validator->fails())
+        {
+            return ['result' => 'false', 'response' => $validator->errors()->first()];
+        }
 
         if (!Auth::attempt(request(['email', 'password'])))
         {
@@ -30,9 +35,9 @@ class loginController extends Controller
 
         $user = Auth::user();
         token::forceCreate([
-            'user_id' => $user->id,
-            'api_token' => $token,
-            'expiry_time' => time() + 7200,
+            'user_id'      => $user->id,
+            'api_token'    => $token,
+            'expiry_time'  => time() + 7200,
             'refresh_time' => time() + 84600
         ]);
 

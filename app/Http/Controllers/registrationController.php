@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class registrationController extends Controller
 {
@@ -36,12 +37,17 @@ class registrationController extends Controller
      */
     public function register(Request $request)
     {
-        $this->validate(request(),[
+        $validator = validator::make($request->all(),[
             'name' => 'required|max:255',
             'phone_number' => 'required|regex:/^\(?[+]?\d{1,3}\)?[-\s]?\d{3}[-\s]?\d{3}[-\s]?\d{3}$/',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed|max:255'
              ]);
+        if ($validator->fails())
+        {
+            return ['result' => 'false', 'response' => $validator->errors()->first()];
+        }
+
         $pattenForPhoneNumber = '/[\s\(\)\-\+]/';
         $new_phone_number = preg_replace($pattenForPhoneNumber, '', $request->phone_number);
 

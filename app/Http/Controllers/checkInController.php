@@ -13,9 +13,6 @@ class checkInController extends Controller {
 
     public function checkIn(Request $request)
     {
-        $this->validate(request(), [
-            'token' => 'required',
-        ]);
         $token_count = token::where('api_token', $request->token)->count();
         if (!$token_count)
         {
@@ -42,10 +39,6 @@ class checkInController extends Controller {
 
     public function showCheckIn(Request $request)
     {
-        $this->validate(request(), [
-            'token' => 'required'
-        ]);
-
         $time = Carbon::now();
         $currentYear = $time->year;
         $currentMonth = $time->month;
