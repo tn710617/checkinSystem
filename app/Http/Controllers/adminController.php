@@ -32,12 +32,15 @@ class adminController extends Controller {
 
         $notYetCheckedInUsers = User::whereNotIn('id', $checkedInUsersIdArray)->get();
 
-        if ($request->get('updatedToken'))
-        {
-            return ['result' => 'true', 'response' => ['checkedInUser' => $checkedInUsers, 'notYetCheckedInUsers' => $notYetCheckedInUsers, 'updatedToken' => $request->get('updatedToken')]];
-        }
-        return ['result' => 'true', 'response' => ['checkedInUser' => $checkedInUsers, 'notYetCheckedInUsers' => $notYetCheckedInUsers]];
+        return array_merge(
+            $result = array('result' => 'true', 'response' => ['checkedInUser' => $checkedInUsers, 'notYetCheckedInUsers' => $notYetCheckedInUsers]),
+            (($request->get('updatedToken') !== null) ? array('updatedToken' => $request->get('updatedToken')) : array()));
     }
+
+
+
+
+
 
     public function showSingleUserCheckIn(Request $request)
     {
@@ -84,12 +87,12 @@ class adminController extends Controller {
                 $finalOutput[$daysInAMonth] = $daysInAMonth > $currentDate ? 'To be seen' : 'no';
             }
         }
-        if ($request->get('updatedToken'))
-        {
-            return ['result' => 'true', 'response' => $finalOutput, 'updatedToken' => $request->get('updatedToken')];
-        }
 
-        return ['result' => 'true', 'response' => $finalOutput];
+
+        return array_merge(
+            $result = array('result' => 'true', 'response' => $finalOutput),
+            (($request->get('updatedToken') !== null) ? array('updatedToken' => $request->get('updatedToken')) : array()));
+
     }
 
 }

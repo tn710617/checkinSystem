@@ -26,18 +26,23 @@ class checkInController extends Controller {
 
         if ($checkInCount)
         {
-            return ['result' => 'false', 'response' => 'You already checked in today'];
+            return array_merge(
+                $result = array('result' => 'true', 'response' => 'You already checked in today'),
+                (($request->get('updatedToken') !== null) ? array('updatedToken' => $request->get('updatedToken')) : array()));
         }
 
         checkIn::forceCreate([
             'user_id'      => $userInfo->id,
             'check_or_not' => 'checked',
         ]);
-        if ($request->get('updatedToken'))
-        {
-            return ['result' => 'true', 'response' => 'You\'ve successfully checked in', 'updatedToken' => $request->get('updatedToken')];
-        }
-        return ['result' => 'true', 'response' => 'You\'ve successfully checked in'];
+//        if ($request->get('updatedToken'))
+//        {
+//            return ['result' => 'true', 'response' => 'You\'ve successfully checked in', 'updatedToken' => $request->get('updatedToken')];
+//        }
+
+        return array_merge(
+            $result = array('result' => 'true', 'response' => 'You\'ve successfully checked in'),
+            (($request->get('updatedToken') !== null) ? array('updatedToken' => $request->get('updatedToken')) : array()));
     }
 
     public function showCheckIn(Request $request)
@@ -77,21 +82,7 @@ class checkInController extends Controller {
         return array_merge(
             $result = array('result' => 'true', 'response' => $finalOutput),
             (($request->get('updatedToken') !== null) ? array('updatedToken' => $request->get('updatedToken')) : array()));
-//
 
-//        if ($request->get('updatedToken'))
-//        {
-//            return ['result' => 'true', 'response' => $finalOutput, 'updatedToken' => $request->get('updatedToken')];
-//        }
-//
-//        return ['result' => 'true', 'response' => $finalOutput];
-
-//        if ($request->get('updatedToken'))
-//        {
-//            return ['result' => 'true', 'response' => $finalOutput, 'updatedToken' => $request->get('updatedToken')];
-//        }
-//
-//        return ['result' => 'true', 'response' => $finalOutput];
     }
 
     public function consecutiveCheckInCount(Request $request)
@@ -101,8 +92,6 @@ class checkInController extends Controller {
         $today = $time->day;
         $thisMonth = $time->month;
         $thisYear = $time->year;
-//        $yesterday = $time->subDays(1);
-//        return $yesterday;
         $user_id = Token::where('api_token', $request->token)->first()->user_id;
         $todayCheckInExists = DB::table('tokens')
             ->where('api_token', $token)
@@ -124,8 +113,11 @@ class checkInController extends Controller {
             };
             $consecutivelyCheckingInDays = $i - 1;
 
-            return ['result' => 'true', 'response' => 'You already checked in today, and you\'ve consecutively checked in for ' . $consecutivelyCheckingInDays .
-                ($consecutivelyCheckingInDays > 1 ? ' days' : ' day')];
+            return array_merge(
+                $result = array('result' => 'true', 'response' => 'You already checked in today, and you\'ve consecutively checked in for '
+                    . $consecutivelyCheckingInDays .
+                    ($consecutivelyCheckingInDays > 1 ? ' days' : ' day')),
+                (($request->get('updatedToken') !== null) ? array('updatedToken' => $request->get('updatedToken')) : array()));
         }
         else
         {
@@ -140,8 +132,11 @@ class checkInController extends Controller {
             };
             $consecutivelyCheckingInDays = $i - 1;
 
-            return ['result' => 'true', 'response' => 'You haven\'t checked in today, and you had consecutively checked in for ' . $consecutivelyCheckingInDays .
-                ($consecutivelyCheckingInDays > 1 ? ' days' : ' day')];
+            return array_merge(
+                $result = array('result' => 'true', 'response' => 'You already checked in today, and you\'ve consecutively checked in for '
+                    . $consecutivelyCheckingInDays .
+                    ($consecutivelyCheckingInDays > 1 ? ' days' : ' day')),
+                (($request->get('updatedToken') !== null) ? array('updatedToken' => $request->get('updatedToken')) : array()));
         }
     }
 }
