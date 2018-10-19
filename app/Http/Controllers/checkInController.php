@@ -37,7 +37,6 @@ class checkInController extends Controller {
         {
             return ['result' => 'true', 'response' => 'You\'ve successfully checked in', 'updatedToken' => $request->get('updatedToken')];
         }
-
         return ['result' => 'true', 'response' => 'You\'ve successfully checked in'];
     }
 
@@ -75,11 +74,74 @@ class checkInController extends Controller {
             }
         }
 
-        if ($request->get('updatedToken'))
-        {
-            return ['result' => 'true', 'response' => $finalOutput, 'updatedToken' => $request->get('updatedToken')];
-        }
+        return array_merge(
+            $result = array('result' => 'true', 'response' => $finalOutput),
+            (($request->get('updatedToken') !== null) ? array('updatedToken' => $request->get('updatedToken')) : array()));
+//
 
-        return ['result' => 'true', 'response' => $finalOutput];
+//        if ($request->get('updatedToken'))
+//        {
+//            return ['result' => 'true', 'response' => $finalOutput, 'updatedToken' => $request->get('updatedToken')];
+//        }
+//
+//        return ['result' => 'true', 'response' => $finalOutput];
+
+//        if ($request->get('updatedToken'))
+//        {
+//            return ['result' => 'true', 'response' => $finalOutput, 'updatedToken' => $request->get('updatedToken')];
+//        }
+//
+//        return ['result' => 'true', 'response' => $finalOutput];
+    }
+
+    public function consecutiveCheckInCount(Request $request)
+    {
+        $token = $request->token;
+        $time = Carbon::now();
+        $today = $time->day;
+        $thisMonth = $time->month;
+        $thisYear = $time->year;
+//        $yesterday = $time->subDays(1);
+//        return $yesterday;
+        $user_id = Token::where('api_token', $request->token)->first()->user_id;
+        $todayCheckInExists = DB::table('tokens')
+            ->where('api_token', $token)
+            ->join('check_ins', 'tokens.user_id', '=', 'check_ins.user_id')
+            ->select('check_ins.check_or_not')
+            ->whereDay('check_ins.created_at', $today)
+            ->exists();
+
+        if ($todayCheckInExists)
+        {
+            $i = 0;
+            $count = 1;
+            while ($count == 1)
+            {
+                $count = checkIn::where('user_id', $user_id)->whereDay('created_at', Carbon::now()->subDays($i)->day)->count();
+
+                $i = $i + 1;
+
+            };
+            $consecutivelyCheckingInDays = $i - 1;
+
+            return ['result' => 'true', 'response' => 'You already checked in today, and you\'ve consecutively checked in for ' . $consecutivelyCheckingInDays .
+                ($consecutivelyCheckingInDays > 1 ? ' days' : ' day')];
+        }
+        else
+        {
+            $i = 0;
+            $count = 1;
+            while ($count == 1)
+            {
+                $count = checkIn::where('user_id', $user_id)->whereDay('created_at', Carbon::yesterday()->subDays($i)->day)->count();
+
+                $i = $i + 1;
+
+            };
+            $consecutivelyCheckingInDays = $i - 1;
+
+            return ['result' => 'true', 'response' => 'You haven\'t checked in today, and you had consecutively checked in for ' . $consecutivelyCheckingInDays .
+                ($consecutivelyCheckingInDays > 1 ? ' days' : ' day')];
+        }
     }
 }
