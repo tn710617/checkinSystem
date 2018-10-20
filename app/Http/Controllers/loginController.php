@@ -26,12 +26,7 @@ class loginController extends Controller {
             return ['result' => 'false', 'response' => 'Please check your credentials and try again'];
         }
 
-        $token_count = 1;
-        while ($token_count == 1)
-        {
-            $token = str_random(60);
-            $token_count = DB::table('tokens')->where('api_token', $token)->count();
-        }
+        $token = Token::createAUniqueToken();
 
         $user = Auth::user();
         token::forceCreate([

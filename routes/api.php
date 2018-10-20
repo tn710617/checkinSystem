@@ -18,6 +18,8 @@ Route::middleware('auth:api.Ray')->get('/user', function (Request $request) {
 });
 Route::post('/register', 'registrationController@register');
 Route::post('/login', 'loginController@login');
+Route::delete('/logout', 'sessionController@logout')->middleware('tokenValidator');
+Route::put('/update', 'sessionController@update')->middleware('tokenValidator');
 Route::post('/checkIn', 'checkInController@checkIn')->middleware('tokenValidator');
 Route::post('/showCheckIn', 'checkInController@showCheckIn')->middleware('tokenValidator');
 Route::post('/consecutiveCheckIn', 'checkInController@consecutiveCheckInCount')->middleware('tokenValidator');
