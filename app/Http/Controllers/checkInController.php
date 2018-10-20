@@ -118,15 +118,16 @@ class checkInController extends Controller {
 
         $consecutivelyCheckingInDays = $i - 1;
 
+        $dayOrDays = str_plural('day', $consecutivelyCheckingInDays);
+
         return array_merge(
             $result = array('result' => 'true', 'response' =>
                 ($todayCheckInExists
                     ? 'You already checked in today, and you\'ve consecutively checked in for '
                     : 'You haven\'t checked in today, and you\'ve consecutively checked in for ')
                 . $consecutivelyCheckingInDays
-                . ($consecutivelyCheckingInDays > 1
-                    ? ' days'
-                    : ' day')),
+                . ' '
+                . $dayOrDays),
             (($request->get('updatedToken') !== null)
                 ? array('updatedToken' => $request->get('updatedToken'))
                 : array()));
