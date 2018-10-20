@@ -53,7 +53,7 @@ class checkInController extends Controller {
         $today = $time->day;
 
         // Get the user_id through token
-        $user_id = token::where('api_token', $request->token)->first()->user_id;
+        $user_id = Token::getUserIdThroughToken($request->token);
 
         // Get the check in record and check in date of designated user_id
         $checkInInDetail = DB::table('check_ins')
@@ -91,7 +91,7 @@ class checkInController extends Controller {
 
         // return the result.
         return array_merge(
-            $result = array('result' => 'true', 'response' => $finalOutput),
+            array('result' => 'true', 'response' => $finalOutput),
             // If updatedToken does exist, return updatedToken
             (($request->get('updatedToken') !== null) ? array('updatedToken' => $request->get('updatedToken')) : array()));
 
@@ -99,37 +99,16 @@ class checkInController extends Controller {
 
     public function consecutiveCheckInCount(Request $request)
     {
-        // check if the user has checked in or not
+        // Get user_id through token
         $user_id = Token::getUserIdThroughToken($request->token);
-//
-//        $todayCheckInExists = CheckIn::where('user_id', $user_id)
-//        ->whereDay('created_at', Carbon::now()->day)
-//        ->exists();
 
+        // check if the user has checked in or not
         $todayCheckInExists = CheckIn::ifUserCheckInToday($user_id);
 
         // if the user has checked in today, calculate how many days the user has checked in consecutively, starting from today and go backwards.
-        $i = 0;
-        $count = 1;
-        // if the count == 1, keep calculating.
-        while ($count == 1)
-        {
-            if ($todayCheckInExists)
-            {
-                $count = checkIn::where('user_id', $user_id)->whereDay('created_at', Carbon::now()->subDays($i)->day)->count();
-            }
-            // if not, calculate from yesterday and go backwards.
-            else
-            {
-                $count = checkIn::where('user_id', $user_id)->whereDay('created_at', Carbon::yesterday()->subDays($i)->day)->count();
-            }
-
-            $i = $i + 1;
-
-        };
-
-
-        $consecutivelyCheckingInDays = $i - 1;
+        // if the check-in record exists, keep calculating.
+        // if not, calculate from yesterday and go backwards.
+        $consecutivelyCheckingInDays = CheckIn::daysTheUserHasCheckedInConsecutively($user_id, $todayCheckInExists);
 
         // Check if it should day or days.
         $dayOrDays = str_plural('day', $consecutivelyCheckingInDays);
@@ -138,7 +117,7 @@ class checkInController extends Controller {
         // if the user has checked in today, return the message with how many days the user has checked in until today.
         // If not, also return with how many days the user has checked in until yesterday.
         return array_merge(
-            $result = array('result' => 'true', 'response' =>
+            array('result' => 'true', 'response' =>
                 ($todayCheckInExists ? 'You already checked in today, and you\'ve consecutively checked in for ' : 'You haven\'t checked in today, and you\'ve consecutively checked in for ')
                 . $consecutivelyCheckingInDays
                 . ' '
