@@ -31,6 +31,7 @@ class adminController extends Controller {
             $checkedInUsers[] = $checkedInUser;
 
             // Also fetch the checked-in user_id from check_ins table and put them into an array for further usage
+            $checkedInUsersIdArray[] = $data->user_id;
         }
 
         // select all the users from users table except for those checked-in user_id to get not-yet checked in users.
@@ -70,10 +71,16 @@ class adminController extends Controller {
         // Ge check in or not information on each day in this month
         $checkInBreakDownThisMonth = checkIn::getCheckedInBreakDownThisMonth($dateAndCheckOrNotInformation);
 
+        // Check if the user checked in today
+        $ifTheUserCheckedInToday = checkIn::ifUserCheckInToday($request->user_id);
+
+        // Get how many days the user has checked in consecutively
+        $howManyDaysTheUserHasCheckedInConsecutively = checkIn::daysTheUserHasCheckedInConsecutively($request->user_id, $ifTheUserCheckedInToday);
+
 
         // return the result.
         return array_merge(
-            $result = array('result' => 'true', 'response' => $checkInBreakDownThisMonth),
+            $result = array('result' => 'true', 'response' => ['CheckedInBreakDown' => $checkInBreakDownThisMonth, 'howManyDaysTheUserHasCheckedIn' => $howManyDaysTheUserHasCheckedInConsecutively]),
             // If updatedToken does exist, return updatedToken
             (($request->get('updatedToken') !== null)
                 ? array('updatedToken' => $request->get('updatedToken'))
