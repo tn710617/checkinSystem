@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use App\Token;
-use Carbon\Carbon;
 use Closure;
 use Illuminate\Support\Facades\Validator;
 
@@ -53,12 +52,7 @@ class tokenValidator {
         if (($now > $tokenExpiryTime) && ($now < $tokenRefreshTime))
         {
             // create a new token and make sure there is no any in the database with the same tokenName
-            $checkTokenCount = 1;
-            while ($checkTokenCount)
-            {
-                $updatedToken = str_random(60);
-                $checkTokenCount = Token::where('api_token', $updatedToken)->count();
-            }
+            $updatedToken = Token::createAUniqueToken();
 
             // For security reason we update the current token name but still allow user to access the service
             Token::where('api_token', $receivedToken)
@@ -69,20 +63,6 @@ class tokenValidator {
             $request->attributes->add(['updatedToken' => $updatedToken]);
             $request->token = $updatedToken;
 
-//            // Insert the new token into database
-//            Token::forceCreate([
-//                'api_token' => $updatedToken,
-//                'expiry_time' => time() + 7200,
-//                'refresh_time' => time() + 86400,
-//                'user_id' => $user_id
-//            ]);
-//
-//            // Delete the old one from database
-//            Token::where('api_token', $receivedToken)->delete();
-//
-//            // Add the updatedToken to $request
-//            $request->attributes->add(['updatedToken' => $updatedToken]);
-//
             return $next($request);
         }
 
