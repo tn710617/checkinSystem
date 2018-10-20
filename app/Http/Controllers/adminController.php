@@ -31,7 +31,6 @@ class adminController extends Controller {
             $checkedInUsers[] = $checkedInUser;
 
             // Also fetch the checked-in user_id from check_ins table and put them into an array for further usage
-            $checkedInUsersIdArray[] = $data->user_id;
         }
 
         // select all the users from users table except for those checked-in user_id to get not-yet checked in users.
@@ -64,51 +63,17 @@ class adminController extends Controller {
         }
 
 
-        // Set the time for further usage.
-        $time = Carbon::now();
-        $currentYear = $time->year;
-        $currentMonth = $time->month;
-        $currentDate = $time->day;
 
         // Get the Day and check_or_not information from check_ins table with designated user_id.
-        $checkInInDetail = DB::table('check_ins')
-            ->select(DB::raw('day(created_at)date, check_or_not'))
-            ->whereMonth('created_at', $currentMonth)
-            ->where('user_id', $request->user_id)
-            ->get()->toArray();
+        $dateAndCheckOrNotInformation = checkIn::getDateAndCheckOrNotInformation($request->user_id);
 
-        // Set an empty array for further usage.
-        $finalOutput = array();
-
-        // Get how many days in the current month
-        $howManyDaysInAMonth = cal_days_in_month(CAL_GREGORIAN, $currentMonth, $currentYear);
-
-        // If the day information we might get from check_ins table does exist,
-        // return the value of check_or_not column.
-        for ($daysInAMonth = 1; $daysInAMonth <= $howManyDaysInAMonth; $daysInAMonth ++)
-        {
-
-            foreach ($checkInInDetail as $data)
-            {
-                if ($daysInAMonth == $data->date)
-                {
-                    $finalOutput[$daysInAMonth] = $data->check_or_not;
-                    break;
-                }
-            }
-
-            // If not, return 'no' on that day.
-            if (!isset($finalOutput[$daysInAMonth]))
-            {
-                // If the checked day is later than today, show 'to be seen'
-                $finalOutput[$daysInAMonth] = $daysInAMonth > $currentDate ? 'To be seen' : 'no';
-            }
-        }
+        // Ge check in or not information on each day in this month
+        $checkInBreakDownThisMonth = checkIn::getCheckedInBreakDownThisMonth($dateAndCheckOrNotInformation);
 
 
         // return the result.
         return array_merge(
-            $result = array('result' => 'true', 'response' => $finalOutput),
+            $result = array('result' => 'true', 'response' => $checkInBreakDownThisMonth),
             // If updatedToken does exist, return updatedToken
             (($request->get('updatedToken') !== null)
                 ? array('updatedToken' => $request->get('updatedToken'))

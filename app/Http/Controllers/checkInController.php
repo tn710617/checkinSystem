@@ -4,10 +4,7 @@ namespace App\Http\Controllers;
 
 use App\CheckIn;
 use App\Token;
-use App\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class checkInController extends Controller {
 
@@ -46,56 +43,23 @@ class checkInController extends Controller {
 
     public function showCheckIn(Request $request)
     {
-        // Set the time variable for further usage.
-        $time = Carbon::now();
-        $thisYear = $time->year;
-        $thisMonth = $time->month;
-        $today = $time->day;
-
         // Get the user_id through token
         $user_id = Token::getUserIdThroughToken($request->token);
 
-        // Get the check in record and check in date of designated user_id
-        $checkInInDetail = DB::table('check_ins')
-            ->select(DB::raw('day(created_at)date, check_or_not'))
-            ->whereMonth('created_at', $thisMonth)
-            ->where('user_id', $user_id)
-            ->get()->toArray();
+        // Get the Day and check_or_not information from check_ins table with designated user_id.
+        $dateAndCheckOrNotInformation = checkIn::getDateAndCheckOrNotInformation($user_id);
 
-        // Set an empty array for further usage
-        $finalOutput = array();
-
-        // Get how many days in this month
-        $howManyDaysInAMonth = cal_days_in_month(CAL_GREGORIAN, $thisMonth, $thisYear);
-
-
-        // If the day information we might get from check_ins table does exist,
-        // return the value of check_or_not column.
-        for ($daysInAMonth = 1; $daysInAMonth <= $howManyDaysInAMonth; $daysInAMonth ++)
-        {
-            foreach ($checkInInDetail as $data)
-            {
-                if ($daysInAMonth == $data->date)
-                {
-                    $finalOutput[$daysInAMonth] = $data->check_or_not;
-                    break;
-                }
-            }
-            // If not, set the key as the date, and the value as no
-            if (!isset($finalOutput[$daysInAMonth]))
-            {
-                // If the checked day is later than today, show 'to be seen'
-                $finalOutput[$daysInAMonth] = $daysInAMonth > $today ? 'To be seen' : 'no';
-            }
-        }
+        // Ge check in or not information on each day in this month
+        $checkInBreakDownThisMonth = checkIn::getCheckedInBreakDownThisMonth($dateAndCheckOrNotInformation);
 
         // return the result.
         return array_merge(
-            array('result' => 'true', 'response' => $finalOutput),
+            array('result' => 'true', 'response' => $checkInBreakDownThisMonth),
             // If updatedToken does exist, return updatedToken
             (($request->get('updatedToken') !== null) ? array('updatedToken' => $request->get('updatedToken')) : array()));
 
     }
+
 
     public function consecutiveCheckInCount(Request $request)
     {
@@ -118,7 +82,9 @@ class checkInController extends Controller {
         // If not, also return with how many days the user has checked in until yesterday.
         return array_merge(
             array('result' => 'true', 'response' =>
-                ($todayCheckInExists ? 'You already checked in today, and you\'ve consecutively checked in for ' : 'You haven\'t checked in today, and you\'ve consecutively checked in for ')
+                ($todayCheckInExists
+                    ? 'You already checked in today, and you\'ve consecutively checked in for '
+                    : 'You haven\'t checked in today, and you\'ve consecutively checked in for ')
                 . $consecutivelyCheckingInDays
                 . ' '
                 . $dayOrDays),
