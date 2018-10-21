@@ -22,6 +22,11 @@ Route::delete('/logout', 'sessionController@logout')->middleware('tokenValidator
 Route::put('/update', 'sessionController@update')->middleware('tokenValidator');
 Route::post('/checkIn', 'checkInController@checkIn')->middleware('tokenValidator');
 Route::post('/showCheckIn', 'checkInController@showCheckIn')->middleware('tokenValidator');
-Route::post('/consecutiveCheckIn', 'checkInController@consecutiveCheckInCount')->middleware('tokenValidator');
 Route::post('/adminShowTodayCheckIn', 'adminController@showCheckInToday')->middleware('admin', 'tokenValidator');
 Route::post('/adminShowSingleUserCheckIn', 'adminController@showSingleUserCheckIn')->middleware('admin', 'tokenValidator');
+
+
+
+
+
+//Route::post('/consecutiveCheckIn', 'checkInController@consecutiveCheckInCount')->middleware('tokenValidator');

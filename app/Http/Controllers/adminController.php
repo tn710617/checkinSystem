@@ -62,7 +62,6 @@ class adminController extends Controller {
         }
 
 
-
         // Get the Day and check_or_not information from check_ins table with designated user_id.
         $dateAndCheckOrNotInformation = checkIn::getDateAndCheckOrNotInformation($request->user_id);
 
@@ -79,12 +78,15 @@ class adminController extends Controller {
 
         // return the result.
         return array_merge(
-            $result = array('result' => 'true', 'response' => ['CheckedInBreakDown' => $checkInBreakDownThisMonth, 'howManyDaysTheUserHasCheckedIn' => $howManyDaysTheUserHasCheckedInConsecutively]),
+            $result = array('result'   => 'true',
+                            'response' =>
+                                ['CheckedInBreakdown'             => $checkInBreakDownThisMonth,
+                                 'howManyDaysTheUserHasCheckedIn' => $howManyDaysTheUserHasCheckedInConsecutively,
+                                 'totalRewardPoints'              => User::getTotalRewardPoints($request->user_id)]),
             // If updatedToken does exist, return updatedToken
             (($request->get('updatedToken') !== null)
                 ? array('updatedToken' => $request->get('updatedToken'))
                 : array()));
 
     }
-
 }

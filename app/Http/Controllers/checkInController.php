@@ -82,40 +82,4 @@ class checkInController extends Controller {
             (($request->get('updatedToken') !== null) ? array('updatedToken' => $request->get('updatedToken')) : array()));
 
     }
-
-
-    public function consecutiveCheckInCount(Request $request)
-    {
-        // Get user_id through token
-        $user_id = Token::getUserIdThroughToken($request->token);
-
-        // check if the user has checked in or not
-        $todayCheckInExists = CheckIn::ifUserCheckInToday($user_id);
-
-        // if the user has checked in today, calculate how many days the user has checked in consecutively, starting from today and go backwards.
-        // if the check-in record exists, keep calculating.
-        // if not, calculate from yesterday and go backwards.
-        $consecutivelyCheckingInDays = $todayCheckInExists
-            ? checkIn::howManyDaysTheUserHasCheckedInConsecutivelyUntilToday($user_id)
-            : checkIn::howManyDaysTheUserHasCheckedInConsecutivelyUntilYesterday($user_id);
-
-        // Check if it should day or days.
-        $dayOrDays = str_plural('day', $consecutivelyCheckingInDays);
-
-
-        // if the user has checked in today, return the message with how many days the user has checked in until today.
-        // If not, also return with how many days the user has checked in until yesterday.
-        return array_merge(
-            array('result' => 'true', 'response' =>
-                ($todayCheckInExists
-                    ? 'You already checked in today, and you\'ve consecutively checked in for '
-                    : 'You haven\'t checked in today, and you\'ve consecutively checked in for ')
-                . $consecutivelyCheckingInDays
-                . ' '
-                . $dayOrDays),
-            // If updatedToken does exist, return updatedToken
-            (($request->get('updatedToken') !== null)
-                ? array('updatedToken' => $request->get('updatedToken'))
-                : array()));
-    }
 }
