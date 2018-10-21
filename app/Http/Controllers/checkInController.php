@@ -42,17 +42,17 @@ class checkInController extends Controller {
 
         // Get the rewards points and update it in database
         $rewardPointsToday = $howManyDaysTheUserHasCheckedIn * 2;
-        User::where('id', $user_id)->update(['reward_points' => ($totalRewardPoints + $rewardPointsToday),
-            'consecutive_checked_in_days' => $howManyDaysTheUserHasCheckedIn
-            ]);
+        User::where('id', $user_id)->update(['reward_points'               => ($totalRewardPoints + $rewardPointsToday),
+                                             'consecutive_checked_in_days' => $howManyDaysTheUserHasCheckedIn
+        ]);
 
         // Response the successfully checked in message.
 
         return array_merge(array('result' => 'true', 'response' =>
             [
-                'memo' => 'You\'ve successfully checked in',
+                'memo'                           => 'You\'ve successfully checked in',
                 'howManyDaysTheUserHasCheckedIn' => $howManyDaysTheUserHasCheckedIn,
-                'rewardPointToday' => $rewardPointsToday
+                'rewardPointToday'               => $rewardPointsToday
             ]),
             (($request->get('updatedToken') !== null)
                 ? array('updatedToken' => $request->get('updatedToken'))
@@ -73,7 +73,11 @@ class checkInController extends Controller {
 
         // return the result.
         return array_merge(
-            array('result' => 'true', 'response' => $checkInBreakDownThisMonth),
+            array('result' => 'true', 'response'
+                           => ['checkInBreakdown'               => $checkInBreakDownThisMonth,
+                               'howManyDaysTheUserHasCheckedIn' => User::getTotalConsecutiveCheckedInDays($user_id),
+                               'totalRewardPoints'              => User::getTotalRewardPoints($user_id)
+                ]),
             // If updatedToken does exist, return updatedToken
             (($request->get('updatedToken') !== null) ? array('updatedToken' => $request->get('updatedToken')) : array()));
 
@@ -91,9 +95,9 @@ class checkInController extends Controller {
         // if the user has checked in today, calculate how many days the user has checked in consecutively, starting from today and go backwards.
         // if the check-in record exists, keep calculating.
         // if not, calculate from yesterday and go backwards.
-       $consecutivelyCheckingInDays = $todayCheckInExists
-           ? checkIn::howManyDaysTheUserHasCheckedInConsecutivelyUntilToday($user_id)
-           : checkIn::howManyDaysTheUserHasCheckedInConsecutivelyUntilYesterday($user_id);
+        $consecutivelyCheckingInDays = $todayCheckInExists
+            ? checkIn::howManyDaysTheUserHasCheckedInConsecutivelyUntilToday($user_id)
+            : checkIn::howManyDaysTheUserHasCheckedInConsecutivelyUntilYesterday($user_id);
 
         // Check if it should day or days.
         $dayOrDays = str_plural('day', $consecutivelyCheckingInDays);

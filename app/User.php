@@ -32,4 +32,9 @@ class User extends Authenticatable
     {
         return static::where('id', $user_id)->first()->reward_points;
     }
+
+    public static function getTotalConsecutiveCheckedInDays($user_id)
+    {
+        return static::where('id', $user_id)->first()->consecutive_checked_in_days;
+    }
 }
