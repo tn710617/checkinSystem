@@ -32,6 +32,8 @@
  6. 輸入：`php artisan migrate`
  7. 希望您有好的使用體驗。
  
+ 更詳盡的資訊請參考文件如下：
+ `https://docs.google.com/spreadsheets/d/1gqI0eK8BMu13-fdeCT-mgSPV495zElOhxfa2ED4F7Ks/edit?usp=sharing`
  
 A user daily check-in and point-rewarding system
 ===
@@ -66,3 +68,6 @@ For users
  5. Enter `php artisan key:generate`   
  6. Enter `php artisan migrate`
  7. Hope that you will be enjoying it.
+ 
+ For information in detail, please refer to the documentation as follows:
+ `https://docs.google.com/spreadsheets/d/1gqI0eK8BMu13-fdeCT-mgSPV495zElOhxfa2ED4F7Ks/edit?usp=sharing`
