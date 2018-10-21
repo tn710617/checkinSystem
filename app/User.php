@@ -27,4 +27,9 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token', 'created_at', 'updated_at', 'email_verified_at', 'admin'
     ];
+
+    public static function getTotalRewardPoints($user_id)
+    {
+        return static::where('id', $user_id)->first()->reward_points;
+    }
 }

@@ -92,4 +92,9 @@ class checkIn extends Model {
         return $i - 1;
 
     }
+
+    public static function singularOrPlural($word, $number)
+    {
+         return str_plural($word, $number);
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\CheckIn;
 use App\Token;
+use App\User;
 use Illuminate\Http\Request;
 
 class checkInController extends Controller {
@@ -33,8 +34,26 @@ class checkInController extends Controller {
             'check_or_not' => 'checked',
         ]);
 
+        // Get how many days the user has checked in.
+        $howManyDaysTheUserHasCheckedIn = checkIn::howManyDaysTheUserHasCheckedInConsecutivelyUntilToday($user_id);
+
+        // Get current total reward points of the user
+        $totalRewardPoints = User::getTotalRewardPoints($user_id);
+
+        // Get the rewards points and update it in database
+        $rewardPointsToday = $howManyDaysTheUserHasCheckedIn * 2;
+        User::where('id', $user_id)->update(['reward_points' => ($totalRewardPoints + $rewardPointsToday),
+            'consecutive_checked_in_days' => $howManyDaysTheUserHasCheckedIn
+            ]);
+
         // Response the successfully checked in message.
-        return array_merge(array('result' => 'true', 'response' => 'You\'ve successfully checked in'),
+
+        return array_merge(array('result' => 'true', 'response' =>
+            [
+                'memo' => 'You\'ve successfully checked in',
+                'howManyDaysTheUserHasCheckedIn' => $howManyDaysTheUserHasCheckedIn,
+                'rewardPointToday' => $rewardPointsToday
+            ]),
             (($request->get('updatedToken') !== null)
                 ? array('updatedToken' => $request->get('updatedToken'))
                 : array()));
