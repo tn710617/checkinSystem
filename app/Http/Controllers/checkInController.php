@@ -72,7 +72,9 @@ class checkInController extends Controller {
         // if the user has checked in today, calculate how many days the user has checked in consecutively, starting from today and go backwards.
         // if the check-in record exists, keep calculating.
         // if not, calculate from yesterday and go backwards.
-        $consecutivelyCheckingInDays = CheckIn::daysTheUserHasCheckedInConsecutively($user_id, $todayCheckInExists);
+       $consecutivelyCheckingInDays = $todayCheckInExists
+           ? checkIn::howManyDaysTheUserHasCheckedInConsecutivelyUntilToday($user_id)
+           : checkIn::howManyDaysTheUserHasCheckedInConsecutivelyUntilYesterday($user_id);
 
         // Check if it should day or days.
         $dayOrDays = str_plural('day', $consecutivelyCheckingInDays);

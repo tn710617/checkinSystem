@@ -73,8 +73,9 @@ class adminController extends Controller {
         $ifTheUserCheckedInToday = checkIn::ifUserCheckInToday($request->user_id);
 
         // Get how many days the user has checked in consecutively
-        $howManyDaysTheUserHasCheckedInConsecutively = checkIn::daysTheUserHasCheckedInConsecutively($request->user_id, $ifTheUserCheckedInToday);
-
+        $howManyDaysTheUserHasCheckedInConsecutively = ($ifTheUserCheckedInToday)
+            ? checkIn::howManyDaysTheUserHasCheckedInConsecutivelyUntilToday($request->user_id)
+            : checkIn::howManyDaysTheUserHasCheckedInConsecutivelyUntilYesterday($request->user_id);
 
         // return the result.
         return array_merge(
