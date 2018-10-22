@@ -8,7 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class adminController extends Controller {
+class AdminController extends Controller {
 
     public function showCheckInToday(Request $request)
     {

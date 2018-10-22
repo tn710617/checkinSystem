@@ -16,17 +16,17 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api.Ray')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::post('/register', 'registrationController@register');
-Route::post('/login', 'loginController@login');
-Route::delete('/logout', 'sessionController@logout')->middleware('tokenValidator');
-Route::put('/update', 'sessionController@update')->middleware('tokenValidator');
-Route::post('/checkIn', 'checkInController@checkIn')->middleware('tokenValidator');
-Route::post('/showCheckIn', 'checkInController@showCheckIn')->middleware('tokenValidator');
-Route::post('/adminShowTodayCheckIn', 'adminController@showCheckInToday')->middleware('admin', 'tokenValidator');
-Route::post('/adminShowSingleUserCheckIn', 'adminController@showSingleUserCheckIn')->middleware('admin', 'tokenValidator');
+Route::post('/register', 'RegistrationController@register');
+Route::post('/login', 'LoginController@login');
+Route::delete('/logout', 'SessionController@logout')->middleware('tokenValidator');
+Route::put('/update', 'SessionController@update')->middleware('tokenValidator');
+Route::post('/checkIn', 'CheckInController@checkIn')->middleware('tokenValidator');
+Route::post('/showCheckIn', 'CheckInController@showCheckIn')->middleware('tokenValidator');
+Route::post('/adminShowTodayCheckIn', 'AdminController@showCheckInToday')->middleware('admin', 'tokenValidator');
+Route::post('/adminShowSingleUserCheckIn', 'AdminController@showSingleUserCheckIn')->middleware('admin', 'tokenValidator');
 
 
 
 
 
-//Route::post('/consecutiveCheckIn', 'checkInController@consecutiveCheckInCount')->middleware('tokenValidator');
+//Route::post('/consecutiveCheckIn', 'checkInController@consecutiveCheckInCount')->middleware('TokenValidator');

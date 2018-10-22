@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class checkIn extends Model {
+class CheckIn extends Model {
 
     public static function ifUserCheckInToday($user_id)
     {

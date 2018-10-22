@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-class loginController extends Controller {
+class LoginController extends Controller {
 
     public function login(Request $request)
     {

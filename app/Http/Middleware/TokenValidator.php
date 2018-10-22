@@ -6,7 +6,7 @@ use App\Token;
 use Closure;
 use Illuminate\Support\Facades\Validator;
 
-class tokenValidator {
+class TokenValidator {
 
     /**
      * Handle an incoming request.

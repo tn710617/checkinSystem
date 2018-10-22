@@ -7,7 +7,7 @@ use App\Token;
 use App\User;
 use Illuminate\Http\Request;
 
-class checkInController extends Controller {
+class CheckInController extends Controller {
 
     public function checkIn(Request $request)
     {

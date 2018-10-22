@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class sessionController extends Controller {
+class SessionController extends Controller {
 
     public function logout(Request $request)
     {
