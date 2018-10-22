@@ -14,8 +14,8 @@ class AddNewColumnToUsers extends Migration
     public function up()
     {
         Schema::table('users', function(Blueprint $table) {
-            $table->integer('reward_points');
-            $table->integer('consecutive_checked_in_days');
+            $table->integer('reward_points')->default(0);
+            $table->integer('consecutive_checked_in_days')->default(0);
         });
     }
 

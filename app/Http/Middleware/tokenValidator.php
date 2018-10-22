@@ -78,13 +78,5 @@ class tokenValidator {
         else{
             return response(['result' => 'false', 'response' => 'The token is invalid']);
         }
-
-
-//        $now = time();
-//        $expiry_time =
-//
-//
-//
-//        return $next($request);
     }
 }
