@@ -34,7 +34,7 @@ class SessionController extends Controller {
         }
         $user_id = Token::getUserIdThroughToken($request->token);
 
-        $currentBcryptedPasswordInTheDatabase = User::where('id', $user_id)->first()->password;
+        $currentBcryptedPasswordInTheDatabase = User::find($user_id)->first()->password;
         if(!hash::check($request->current_password, $currentBcryptedPasswordInTheDatabase))
         {
             return array_merge(
@@ -47,11 +47,13 @@ class SessionController extends Controller {
         $pattenForPhoneNumber = '/[\s\(\)\-\+]/';
         $new_phone_number = preg_replace($pattenForPhoneNumber, '', $request->phone_number);
 
-        User::where('id', $user_id)->update([
+        User::find($user_id)->update([
             'name' => $request->name,
             'phone_number' => $new_phone_number,
             'password' => bcrypt($request->updated_password)
         ]);
+
+        Token::where('user_id', $user_id)->delete();
 
         return array_merge(
             array("result" => "true", "response" => "You've successfully update your personal information"),
