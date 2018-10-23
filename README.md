@@ -33,7 +33,7 @@
  7. 希望您有好的使用體驗。
  
  更詳盡的資訊請參考文件如下：
- `https://docs.google.com/spreadsheets/d/1gqI0eK8BMu13-fdeCT-mgSPV495zElOhxfa2ED4F7Ks/edit?usp=sharing`
+ `https://tn710617.github.io./`
  
 A user daily check-in and point-rewarding system
 ===
@@ -70,4 +70,4 @@ For users
  7. Hope that you will be enjoying it.
  
  For information in detail, please refer to the documentation as follows:
- `https://docs.google.com/spreadsheets/d/1gqI0eK8BMu13-fdeCT-mgSPV495zElOhxfa2ED4F7Ks/edit?usp=sharing`
+ `https://tn710617.github.io./`
