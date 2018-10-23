@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\CheckIn;
 use App\Token;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class CheckInController extends Controller {
@@ -62,6 +63,8 @@ class CheckInController extends Controller {
 
     public function showCheckIn(Request $request)
     {
+
+//        return Carbon::today()->subDays(1);
         // Get the user_id through token
         $user_id = Token::getUserIdThroughToken($request->token);
 

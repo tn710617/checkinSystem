@@ -11,7 +11,7 @@ class CheckIn extends Model {
     public static function ifUserCheckInToday($user_id)
     {
         return static::where('user_id', $user_id)
-            ->whereDay('created_at', Carbon::now()->day)
+            ->whereDate('created_at', Carbon::today())
             ->exists();
     }
 
@@ -20,6 +20,7 @@ class CheckIn extends Model {
         // Get the Day and check_or_not information from check_ins table with designated user_id.
         return DB::table('check_ins')
             ->select(DB::raw('day(created_at)date, check_or_not'))
+            ->whereYear('created_at', Carbon::now()->year)
             ->whereMonth('created_at', Carbon::now()->month)
             ->where('user_id', $user_id)
             ->get()->toArray();
@@ -67,7 +68,7 @@ class CheckIn extends Model {
         while ($count == 1)
         {
             $count = checkIn::where('user_id', $user_id)
-                ->whereDay('created_at', Carbon::now()->subDays($i)->day)
+                ->whereDate('created_at', Carbon::today()->subDays($i))
                 ->count();
             $i ++;
         }
@@ -84,7 +85,7 @@ class CheckIn extends Model {
         while ($count == 1)
         {
             $count = checkIn::where('user_id', $user_id)
-                ->whereDay('created_at', Carbon::yesterday()->subDays($i)->day)
+                ->whereDate('created_at', Carbon::yesterday()->subDays($i))
                 ->count();
             $i ++;
         }

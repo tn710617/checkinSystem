@@ -12,6 +12,8 @@ class LoginController extends Controller {
 
     public function login(Request $request)
     {
+        $request->validate([            'email'    => 'required|string|max:255',
+                                        'password' => 'required|string|max:255']);
         $validator = validator::make($request->all(), [
             'email'    => 'required|string|max:255',
             'password' => 'required|string|max:255'
