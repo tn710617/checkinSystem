@@ -39,7 +39,8 @@ class RegistrationController extends Controller
     {
         $validator = validator::make($request->all(),[
             'name' => 'required|max:255',
-            'phone_number' => 'required|regex:/^\(?[+]?\d{1,3}\)?[-\s]?\d{3}[-\s]?\d{3}[-\s]?\d{3}$/',
+//            'phone_number' => 'required|regex:/^\(?[+]?\d{1,3}\)?[-\s]?\d{3}[-\s]?\d{3}[-\s]?\d{3}$/',
+            'phone_number' => 'phone:AUTO',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed|max:255'
              ]);
@@ -48,7 +49,7 @@ class RegistrationController extends Controller
             return ['result' => 'false', 'response' => $validator->errors()->first()];
         }
 
-        $pattenForPhoneNumber = '/[\s\(\)\-\+]/';
+        $pattenForPhoneNumber = '/[^0-9]/';
         $new_phone_number = preg_replace($pattenForPhoneNumber, '', $request->phone_number);
 
         $user = User::forceCreate([

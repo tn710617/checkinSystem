@@ -9,7 +9,9 @@
         "barryvdh/laravel-cors": "^0.11.2",
         "fideloper/proxy": "^4.0",
         "laravel/framework": "5.7.*",
-        "laravel/tinker": "^1.0"
+        "laravel/tinker": "^1.0",
+        "propaganistas/laravel-intl": "^2.1",
+        "propaganistas/laravel-phone": "^4.0"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",
