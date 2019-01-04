@@ -33,7 +33,7 @@
  7. 希望您有好的使用體驗。
  
  更詳盡的資訊請參考文件如下：
- `https://tn710617.github.io./`
+ `https://tn710617.github.io/API_Document/checkInSystem/`
  
 A user daily check-in and point-rewarding system
 ===
